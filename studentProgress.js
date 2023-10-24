@@ -1,5 +1,5 @@
 const fs = require("fs");
-
+const path = require("path");
 const studentProgressInputConverter = (inputText) => {
   const textArr = inputText.split(" ");
   const studentData = {};
@@ -50,6 +50,16 @@ const progressWriter = (rawProgressText) => {
   fs.writeFileSync(`${fileName}.txt`, progressReport);
 };
 
+const getData = () => {
+  const studentData = fs.readFileSync(
+    path.resolve(__dirname, "./progress.txt"),
+    "utf-8"
+  );
+  const lines = studentData.split("\n");
+  return lines;
+};
+
+progressWriter(getData());
 module.exports = {
   studentProgressInputConverter,
   progressCompiler,
