@@ -1,0 +1,6 @@
+ X X X X                                      Student One
+ X X X X X X X                                Student Two
+                                              Student Three
+ X X X                                        Student Four
+ X X X X                                      Student Five
+ X X X X X X X X                              Student Six
