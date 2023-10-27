@@ -1,5 +1,4 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require("fs/promises");
 
 const studentProgressInputConverter = (inputText) => {
   const studentDataArr = inputText.split(/\s\s+/);
@@ -39,30 +38,21 @@ const progressCompiler = (rawInputText) => {
   return compiledResultString;
 };
 
-const progressWriter = (rawInputText) => {
+const progressWriter = async (rawInputText) => {
   const progressReport = progressCompiler(rawInputText);
-  console.log(progressReport);
   const time = new Date();
-  const fullDate = time.toDateString();
+
+  const fullDate = `${time.getDate()}_${time.getMonth() + 1}`;
   const hour = time.getHours();
   const mins = time.getMinutes();
-  const timeStamp = `${fullDate} ${hour}:${mins}`;
-  const fileName = `Student Progress ${timeStamp}`;
+  const timeStamp = `${fullDate}_${hour}:${mins}`;
+  const fileName = `Student_progress_${timeStamp}`;
 
-  fs.writeFileSync(`${fileName}.txt`, progressReport);
-};
-
-const getData = () => {
-  const studentData = fs.readFileSync(
-    path.resolve(__dirname, "./progress.txt"),
-    "utf-8"
-  );
-  const lines = studentData.split("\n");
-  return lines;
+  const write = fs.writeFile(`${fileName}.txt`, progressReport);
+  await write;
 };
 
 module.exports = {
-  getData,
   studentProgressInputConverter,
   progressCompiler,
   progressWriter,
