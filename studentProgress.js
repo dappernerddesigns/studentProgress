@@ -48,7 +48,7 @@ const progressWriter = async (rawInputText) => {
   const timeStamp = `${fullDate}_${hour}:${mins}`;
   const fileName = `Student_progress_${timeStamp}`;
 
-  const write = fs.writeFile(`${fileName}.txt`, progressReport);
+  const write = fs.writeFile(`${fileName}.txt`, progressReport, "utf-8");
   await write;
 };
 

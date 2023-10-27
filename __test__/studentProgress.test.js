@@ -3,7 +3,7 @@ const {
   progressCompiler,
   progressWriter,
 } = require("../studentProgress");
-const fs = require("fs/promises");
+const fs = require("fs");
 const path = require("path");
 
 describe("Student Progress Converter", () => {
@@ -67,7 +67,14 @@ describe("Progress writer", () => {
     jest.useRealTimers();
   });
 
-  jest.mock("fs");
-
-  test.toDo("Should call fs writefile with the correct time stamp and data");
+  test("Function creates a file with the current time stamp as a file name with the progress of the students ordered by task", () => {
+    const input = `X X X X                                      Student One\nX X                                          Student Two`;
+    progressWriter(input);
+    const studentData = fs.readFileSync(
+      path.resolve(__dirname, "../Student_progress_13_10_10:30.txt"),
+      "utf-8"
+    );
+    const expected = `Task 2 - Student Two\nTask 4 - Student One`;
+    expect(studentData).toBe(expected);
+  });
 });
