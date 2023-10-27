@@ -1,45 +1,47 @@
 const fs = require("fs");
 const path = require("path");
+
 const studentProgressInputConverter = (inputText) => {
-  const textArr = inputText.split(" ");
-  const studentData = {};
+  const studentDataArr = inputText.split(/\s\s+/);
+  const taskCount =
+    studentDataArr[0].length === 0 ? 0 : studentDataArr[0].split(" ").length;
+  const studentName = studentDataArr[1];
 
-  studentData.taskCount = textArr.filter((task) => {
-    return task === "X";
-  }).length;
-
-  studentData.studentName = textArr
-    .filter((element) => {
-      if (element !== "X" && element !== " ") {
-        return element;
-      }
-    })
-    .join(" ");
+  const studentData = {
+    taskCount,
+    studentName,
+  };
 
   return studentData;
 };
 
-const progressCompiler = (rawProgressText) => {
-  const convertedStudents = rawProgressText.map((student) => {
+const progressCompiler = (rawInputText) => {
+  const rawInputArray = rawInputText.split("\n");
+  const convertedStudents = rawInputArray.map((student) => {
     return studentProgressInputConverter(student);
   });
   const sortedStudents = convertedStudents.sort((a, b) => {
-    return a.taskCount > b.taskCount ? 1 : a.taskCount < b.taskCount ? -1 : 0;
-  });
-
-  let compiledResultString = "";
-
-  sortedStudents.forEach(({ taskCount, studentName }, index) => {
-    compiledResultString += `Task ${taskCount} - ${studentName}`;
-    if (index !== sortedStudents.length - 1) {
-      compiledResultString += `\n`;
+    if (a.taskCount > b.taskCount) {
+      return 1;
+    } else if (a.taskCount < b.taskCount) {
+      return -1;
+    } else {
+      return 0;
     }
   });
+
+  compiledResultString = sortedStudents
+    .map(({ taskCount, studentName }) => {
+      return `Task ${taskCount} - ${studentName}`;
+    })
+    .join("\n");
+
   return compiledResultString;
 };
 
-const progressWriter = (rawProgressText) => {
-  const progressReport = progressCompiler(rawProgressText);
+const progressWriter = (rawInputText) => {
+  const progressReport = progressCompiler(rawInputText);
+  console.log(progressReport);
   const time = new Date();
   const fullDate = time.toDateString();
   const hour = time.getHours();
@@ -59,8 +61,8 @@ const getData = () => {
   return lines;
 };
 
-progressWriter(getData());
 module.exports = {
+  getData,
   studentProgressInputConverter,
   progressCompiler,
   progressWriter,
